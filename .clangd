@@ -1,0 +1,4 @@
+CompileFlags:
+  Add:
+    - -I/home/marcus/courses/lowlevel fundamentals of C/inc
+
