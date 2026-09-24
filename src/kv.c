@@ -23,7 +23,7 @@ size_t hash(char *val, int capacity) {
 //  - key: a pointer to key to delete
 //  returns: 0 on success, -1 on error
     
-int kv_dete(kv_t *db, char* key) {
+int kv_delete(kv_t *db, char* key) {
     if (!db || !key) return -1;
 
     size_t idx = hash(key, db->capacity);
@@ -43,7 +43,7 @@ int kv_dete(kv_t *db, char* key) {
             free(entry->key);
             free(entry->value);
 
-            db->count --;
+            db->count--;
 
             entry->key = TOMBSTONE;
             entry->value = NULL;

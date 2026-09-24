@@ -16,7 +16,10 @@ int main() {
 
     printf("%s | %s | %s \n", val, val2, val3);
     
-    kv_dete(table, "hehe");
+    int res = kv_delete(table, "hehe");
+    
+    printf("%d\n", res);
+
     val = NULL;
     val = kv_get(table, "hehe");
 
