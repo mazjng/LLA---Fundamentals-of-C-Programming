@@ -17,12 +17,38 @@ size_t hash(char *val, int capacity) {
     return hash % capacity;
 }
 
+// fn kv_free
+// params:
+//  - db: a pointer to db
+//  returns: 0 on success, -1 on error
+int kv_free(kv_t *db) {
+    if (!db) return -1;
+
+    for (int i = 0; i < db->capacity -1; i++) {
+        kv_entry_t *entry = &db->entries[i];
+
+        if (entry->key && entry->key != TOMBSTONE) {
+            free(entry->key);
+            free(entry->value);
+
+            entry->key = NULL;
+            entry->value = NULL;
+
+            db->count--;
+        }
+    }
+
+    free(db->entries);
+    free(db);
+
+    return 0;
+}
+
 // fn kv_delete
 // params:
 //  - db: a pointer to db
 //  - key: a pointer to key to delete
 //  returns: 0 on success, -1 on error
-    
 int kv_delete(kv_t *db, char* key) {
     if (!db || !key) return -1;
 
@@ -122,7 +148,8 @@ int kv_put(kv_t *db, char *key, char *value) {
             // Using strdup to allocate space on the heap for the string
             char *newval = strdup(value);
             if (!newval) return -1;
-
+            
+            free(entry->value);
             entry->value = newval;
             return 0;
         }
