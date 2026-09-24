@@ -1,7 +1,6 @@
 #include <kv.h>
 #include <string.h>
 
-#define TOMBSTONE 0x1
 
 size_t hash(char *val, int capacity) {
     size_t hash = 0x13371337;
@@ -16,6 +15,41 @@ size_t hash(char *val, int capacity) {
     }
 
     return hash % capacity;
+}
+
+// fn kv_get
+// params:
+//  - db: a pointer to db
+//  - key: a pointer to the key value
+//  returns: pointer to the key, 
+//      NULL if not found
+char *kv_get(kv_t *db, char *key) {
+
+    if (!db || !key) return NULL;
+
+    size_t idx = hash(key, db->capacity);
+
+    for (int i = 0; i < db->capacity -1; i++){
+        
+        size_t seek_idx = (idx + i) % db->capacity;
+        kv_entry_t *entry = &db->entries[seek_idx];
+        
+        // no key
+        if (entry->key == NULL) {
+            return NULL;
+        }
+        
+        // keys match
+        if (entry->key 
+            && entry->key != TOMBSTONE
+            && !strcmp(entry->key, key)) {
+            return entry->value;
+        }
+
+        // keep seeking on TOMBSTONE
+    }
+
+    return NULL;
 }
 
 // fn kv_put
@@ -40,10 +74,12 @@ int kv_put(kv_t *db, char *key, char *value) {
 
         size_t seek_idx = (idx + i) % db->capacity;
         kv_entry_t *entry = &db->entries[seek_idx];
-
+        
+        // found the slot, occupied and the key matches
         // Use void* to cast the int for a pointer comparison
+        // REMEBER: strcmp returns 0 for equal strings
         if (entry->key 
-                && entry->key != (void*)TOMBSTONE 
+                && entry->key != TOMBSTONE 
                 &&!strcmp(entry->key, key)) {
             // Using strdup to allocate space on the heap for the string
             char *newval = strdup(value);
@@ -52,8 +88,9 @@ int kv_put(kv_t *db, char *key, char *value) {
             entry->value = newval;
             return 0;
         }
-
-        if (!entry->key || entry->key == (void*)TOMBSTONE) {
+        
+        // found the slot, its empty of tombstone
+        if (!entry->key || entry->key == TOMBSTONE) {
             char *newval = strdup(value);
             char *newkey = strdup(key);
 
