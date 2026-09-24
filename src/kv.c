@@ -24,12 +24,12 @@ size_t hash(char *val, int capacity) {
 int kv_free(kv_t *db) {
     if (!db) return -1;
 
-    for (int i = 0; i < db->capacity -1; i++) {
+    for (int i = 0; i < (int)db->capacity -1; i++) {
         kv_entry_t *entry = &db->entries[i];
 
         if (entry->key && entry->key != TOMBSTONE) {
             free(entry->key);
-            free(entry->value);
+
 
             entry->key = NULL;
             entry->value = NULL;
@@ -54,7 +54,7 @@ int kv_delete(kv_t *db, char* key) {
 
     size_t idx = hash(key, db->capacity);
 
-    for(int i = 0; i < db->capacity -1; i++) {
+    for(int i = 0; i < (int)db->capacity -1; i++) {
         
         size_t seek_idx = (idx + i) % db->capacity;
         kv_entry_t *entry = &db->entries[seek_idx];
@@ -93,7 +93,7 @@ char *kv_get(kv_t *db, char *key) {
 
     size_t idx = hash(key, db->capacity);
 
-    for (int i = 0; i < db->capacity -1; i++){
+    for (int i = 0; i < (int)db->capacity -1; i++){
         
         size_t seek_idx = (idx + i) % db->capacity;
         kv_entry_t *entry = &db->entries[seek_idx];
@@ -130,7 +130,7 @@ int kv_put(kv_t *db, char *key, char *value) {
 
     size_t idx = hash(key, db->capacity);
 
-    for (int i = 0; i < db->capacity -1; i++){
+    for (int i = 0; i < (int)db->capacity -1; i++){
         /*
            Using a Tombstone to denote when an entry is deleted.
            Keeps track of hanging entries due to hash collision
