@@ -47,6 +47,8 @@ int kv_dete(kv_t *db, char* key) {
 
             entry->key = TOMBSTONE;
             entry->value = NULL;
+
+            return 0;
         }
     }
 
