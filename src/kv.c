@@ -23,7 +23,7 @@ size_t hash(char *val, int capacity) {
 //  - db: a pointer to db
 //  - key: a pointer to the key value
 //  - value: a pointer to the value itself
-//  returns: the index of the key, 
+//  returns: on success returns 0, 
 //      on error returns -1
 //      on not found returns -2
 
@@ -39,7 +39,6 @@ int kv_put(kv_t *db, char *key, char *value) {
            */
 
         size_t seek_idx = (idx + i) % db->capacity;
-
         kv_entry_t *entry = &db->entries[seek_idx];
 
         // Use void* to cast the int for a pointer comparison
@@ -51,7 +50,7 @@ int kv_put(kv_t *db, char *key, char *value) {
             if (!newval) return -1;
 
             entry->value = newval;
-            return seek_idx;
+            return 0;
         }
 
         if (!entry->key || entry->key == (void*)TOMBSTONE) {
@@ -68,7 +67,7 @@ int kv_put(kv_t *db, char *key, char *value) {
             entry->key = newkey;
 
             db->count++;
-            return seek_idx;
+            return 0;
         }
     }
 
