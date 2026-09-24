@@ -28,7 +28,7 @@ int kv_dete(kv_t *db, char* key) {
 
     size_t idx = hash(key, db->capacity);
 
-    for(int i = 0; i < db->capacity; i++) {
+    for(int i = 0; i < db->capacity -1; i++) {
         
         size_t seek_idx = (idx + i) % db->capacity;
         kv_entry_t *entry = &db->entries[seek_idx];
