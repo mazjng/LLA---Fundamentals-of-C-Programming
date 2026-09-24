@@ -275,4 +275,12 @@ A stat buffer contains the information / stats of a file.
 Note these are POSIX calls and not cross platform.
 
 
+## Section 10 - Key Value Store
 
+### Hashing Keys
+
+two cases:
+
+- place is free
+- collision
+- recent deletion (TOMBSTONE)
